@@ -6,6 +6,7 @@
 package data;
 
 import comecocos.ComecocosFrame;
+import sound.Sonido;
 
 /**
  *
@@ -66,7 +67,7 @@ public class Rejilla {
         this.altura = 31;
         
         this.map = new char[altura][anchura];
-        getInitalMap();
+        map = getInitalMap();
     }
     
      /**Devuelve la cantidad de celdas de ancho que posee el laberinto.
@@ -144,6 +145,7 @@ public class Rejilla {
                 nextCelda = map[f.getJ()-1][f.getI()];
                 if(nextCelda == '.'){
                     setCelda(f.getJ()-1,f.getI(),' ');
+                    frame.addPuntos(10);
                 }
                 else if(nextCelda == 'o'){
                     setCelda(f.getJ()-1,f.getI(),' ');
@@ -154,6 +156,7 @@ public class Rejilla {
                 nextCelda = map[f.getJ()][f.getI()+1];
                 if(nextCelda == '.'){
                     setCelda(f.getJ(),f.getI()+1,' ');
+                    frame.addPuntos(10);
                 }
                 else if(nextCelda == 'o'){
                     setCelda(f.getJ(),f.getI()+1,' ');
@@ -164,6 +167,7 @@ public class Rejilla {
                 nextCelda = map[f.getJ()+1][f.getI()];
                 if(nextCelda == '.'){
                     setCelda(f.getJ()+1,f.getI(),' ');
+                    frame.addPuntos(10);
                 }
                 else if(nextCelda == 'o'){
                     setCelda(f.getJ()+1,f.getI(),' ');
@@ -175,6 +179,7 @@ public class Rejilla {
                 nextCelda = map[f.getJ()][f.getI()-1];
                 if(nextCelda == '.'){
                     setCelda(f.getJ(),f.getI()-1,' ');
+                    frame.addPuntos(10);
                 }
                 else if(nextCelda == 'o'){
                     setCelda(f.getJ(),f.getI()-1,' ');
@@ -184,6 +189,25 @@ public class Rejilla {
             default:
                 break;
         }
+            
+        if(nivelCompleto()){
+            
+            reiniciar();
+            frame.nextLevel();
+        }
+    }
+    
+    public boolean nivelCompleto(){
+        
+        boolean completo = true;
+        for (int i=0;i<getAnchura();i++){
+            for(int j=0;j<getAltura(); j++){
+                if(map[j][i] == '.' || map[j][i] == 'o'){
+                    completo = false;
+                }
+            }
+        }
+        return completo;
     }
     
     public void reiniciar(){

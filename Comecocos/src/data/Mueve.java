@@ -1,8 +1,10 @@
 package data;
 import comecocos.ComecocosFrame;
+import sound.Sonido;
 
 
 public class Mueve implements Runnable{
+     
     private int delay;
     private boolean continuar;
     private boolean suspendFlag;
@@ -18,7 +20,7 @@ public class Mueve implements Runnable{
      */
     public Mueve(ComecocosFrame fr){
         frame=fr;
-        delay= 100;
+        delay= 175;
         continuar=true;
         suspendFlag=false;
         algoritmo = new Fantasmas(fr,fr.getFantasmas());
@@ -26,11 +28,9 @@ public class Mueve implements Runnable{
     
     /**
      * Código que constituye las sentencias de la tarea. Se encarga
-     * de hacer que se mueva hacia abajo continuamente la Figura que cae en el tablero.
+     * de hacer que se mueva hacia abajo continuamente tanto el comecocos como
+     * los fantasmas.
      * También se encarga de ir refrescando la pantalla dónde se dibuja todo. 
-     * Además controla si la Figura ha terminado
-     * de caer (se ha chocado con el fondo). En ese caso se copian sus Elementos
-     * (celdas) en la Rejilla y se genera una nueva Figura.
      */
     public void run(){
         try{
@@ -58,7 +58,12 @@ public class Mueve implements Runnable{
                  }
                  
                 if(algoritmo.colisionComecocos(frame.getComecocos())){
-                     frame.muerto();
+                    
+                    if(frame.azules()){
+                        frame.fantasmaMuerto(algoritmo.getFantasmaPosicion(frame.getComecocos().getI(),frame.getComecocos().getJ()));
+                    }else{
+                        frame.muerto();
+                    }
                  }
                  
                  frame.repaint();
@@ -73,6 +78,10 @@ public class Mueve implements Runnable{
 
                  for(int i=0;i<frame.getFantasmas().length;i++){
                     frame.getFantasmas()[i].mueve(frame.getFantasmas()[i].getDireccion());
+                    if(!frame.sonando){
+                        Sonido sonido = new Sonido(500,"chomp.wav");
+                        sonido.start();
+                    }
                  }
                  fase = false;
                  frame.repaint();
@@ -80,9 +89,7 @@ public class Mueve implements Runnable{
             }// end while(continuar)
         } catch(InterruptedException e){
             System.out.println("Hebra MueveFigura interrumpida");
-        }
-        
-       
+        }   
     }
     
     /**
@@ -125,6 +132,10 @@ public class Mueve implements Runnable{
      */
     synchronized public boolean getParado(){
         return suspendFlag;
+    }
+    
+    public void nextLevel(){
+        delay-=25;
     }
     
     /**

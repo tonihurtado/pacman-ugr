@@ -21,13 +21,19 @@ public class RejillaPanel extends javax.swing.JPanel {
 
    
     private ComecocosFrame frame;
+    private Timer timer = new Timer();
     private int anchoCelda = 15;
+    
     private boolean paused = false;
+    
     private boolean fase = true;
     private boolean faseFantasmas = true;
-    private boolean parpadea = false;
     
-    private Timer timer = new Timer();
+    private boolean parpadea = false;
+    private boolean parpadeaF = false;
+    private int fParpadeo = -1;
+    
+    
     
     public RejillaPanel() {
         initComponents();
@@ -39,6 +45,7 @@ public class RejillaPanel extends javax.swing.JPanel {
     }
     
     public void dibujaRejilla(Graphics g){
+        
         Rejilla rejilla = frame.getRejilla();
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, getWidth(), getHeight());
@@ -151,14 +158,20 @@ public class RejillaPanel extends javax.swing.JPanel {
                 
                 posicionX= anchoCelda*fantasmas[i].getI();
                 posicionY= anchoCelda*fantasmas[i].getJ();
+                
                 drawIt(g,posicionX,posicionY,i);
             }
             
             faseFantasmas = true;
+            
         }else{
             for(int j=0;j<fantasmas.length; j++){
                 
                 int dir = fantasmas[j].getDireccion();
+                
+               if(parpadeaF && fParpadeo == j){
+                    g.setColor(Color.BLACK);
+               }
                 
                if(frame.getRejilla().colision(fantasmas[j],dir)){
                    dir = -1;
@@ -223,11 +236,13 @@ public class RejillaPanel extends javax.swing.JPanel {
             g.fillOval(posicionX+8, posicionY+anchoCelda/5,anchoCelda/5, anchoCelda/5);
     }
     
-    public void setParpadeo(){
-        parpadea = true;
+    public void setParpadeoComecocos(){
+        
         this.timer.cancel(); 
         this.timer = new Timer();
 
+        parpadea = true;
+        
         TimerTask action = new TimerTask() {
             public void run() {
                 parpadea = false;
@@ -236,6 +251,29 @@ public class RejillaPanel extends javax.swing.JPanel {
 
         this.timer.schedule(action, 2000); //this starts the task
     }
+    
+     public boolean getParpadeoComecocos(){
+        return parpadea;
+    }
+    
+    public void setParpadeoFantasma(int i){
+        
+        this.timer.cancel(); 
+        this.timer = new Timer();
+        
+        parpadeaF = true;
+        fParpadeo = i;
+       
+        TimerTask action = new TimerTask() {
+            public void run() {
+                parpadeaF = false;
+            }
+        };
+
+        this.timer.schedule(action, 4000); //this starts the task
+    }
+    
+   
     
   
     
@@ -301,9 +339,19 @@ public class RejillaPanel extends javax.swing.JPanel {
                     frame.getComecocos().setDireccion(2);
                 }    
             }
-        if (evt.getKeyCode() == KeyEvent.VK_SPACE){
         }
-       }
+       
+        if (evt.getKeyCode() == KeyEvent.VK_SPACE){
+            
+            if(frame.mueve.getParado()){
+                frame.mueve.reanudar();
+                paused = false;
+            }else{
+                frame.mueve.suspender();
+                paused=true;
+            }
+        }
+       
     }//GEN-LAST:event_keyPressed
 
     private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered

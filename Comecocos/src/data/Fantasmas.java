@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package data;
+
 import comecocos.ComecocosFrame;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,12 +18,14 @@ public class Fantasmas {
     
     private Random r = new Random();
     private final Figura[] fantasmas;
+    private int fantasmaColision;
     ComecocosFrame frame;
     
     public Fantasmas(ComecocosFrame fr, Figura[] fantasmas){
         
         this.fantasmas = fantasmas;
         this.frame = fr;
+        this.fantasmaColision = 0;
     }
     
     public int movimientoFantasmaAleatorio(int index){
@@ -90,10 +93,12 @@ public class Fantasmas {
         
     public boolean colisionComecocos(Figura comecocos){
         
-        boolean colision = false;
+       boolean colision = false;
+        
+       if(!frame.getPanel().getParpadeoComecocos()){ 
+       
         int[] posicionComecocos = {comecocos.getI(),comecocos.getJ()};
         int[] nextComecocos = getNextPosition(comecocos.getI(),comecocos.getJ(),comecocos.getDireccion());
-        
         
         for(int i=0; i<fantasmas.length; i++){
           
@@ -101,12 +106,15 @@ public class Fantasmas {
             int[] nextFantasma = getNextPosition(fantasmas[i].getI(),fantasmas[i].getJ(),fantasmas[i].getDireccion());
             
             if((posicionFantasma[0] == posicionComecocos[0] && posicionFantasma[1] == posicionComecocos[1]) ||
-                    (nextFantasma[0] == nextComecocos[0] && nextFantasma[1] == nextComecocos[1])){
+                    (nextFantasma[0] == nextComecocos[0] && nextFantasma[1] == nextComecocos[1]) ||
+                    (nextComecocos[0] == posicionFantasma[0] && nextComecocos[1] == posicionFantasma[1]) ||
+                    (nextFantasma[0] == posicionComecocos[0] && nextFantasma[1] == posicionComecocos[1])){
                 colision = true;
+                fantasmaColision = i;
             }
         }
-        
-        return colision;
+       }
+       return colision;
     }
    
         
@@ -132,6 +140,10 @@ public class Fantasmas {
         
         int[] par = {x,y};
         return par;
+    }
+    
+    public int getFantasmaPosicion(int i, int j){ 
+        return fantasmaColision;
     }
         
     private static double distanciaEuclidea(Figura comecocos, int x, int y){
