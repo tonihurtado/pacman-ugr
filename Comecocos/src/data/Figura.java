@@ -1,27 +1,38 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+////////////////////////////////////////////////////////////////////////////////
+/////           PRACTICA 8 - COMECOCOS - CLASE FIGURA                      /////
+////////////////////////////////////////////////////////////////////////////////
  */
+
 package data;
 
 /**
- *
- * @author Toni
- */
+*Esta clase define una unidad elemental de nuestro juego, que serán las figuras.
+*Cada figura contará con dos enteros i e j que definirán la posición de la
+*figura, y un entero que definirá la dirección, donde usaremos:
+*
+* 0 -> arriba
+* 1 -> derecha
+* 2 -> abajo
+* 3 -> izquierda
+*
+* @author Jose Antonio Hurtado Morón
+*/
 public class Figura {
-    
-  
-    private int direccion; 
+
+
+    private int direccion;
     private int i;
     private int j;
-    
+
     public Figura(int i, int j, int direccion){
         this.i = i;
         this.j = j;
         this.direccion=direccion;
     }
-    
+
+//___________________________GETTER & SETTER____________________________________
+
     public int getDireccion() {
         return direccion;
     }
@@ -45,9 +56,14 @@ public class Figura {
     public void setJ(int j){
         this.j=j;
     }
-    
+
+//______________________________MUEVE___________________________________________
+
+  //El metodo mueve desplazará la posición de la figura en función del parametro
+  //dirección que se le pase.
+
     public void mueve(int direccion){
-        
+
         if (j==14 && i==1 && direccion == 3){
             this.setI(27);
         }else if (j == 14 && i == 26 && direccion == 1){
@@ -55,9 +71,9 @@ public class Figura {
         }
 
         switch (direccion) {
-            
+
             case 0: //ARRIBA
-                this.j--;    
+                this.j--;
                 break;
             case 1:  //DERECHA
                 this.i++;
@@ -68,7 +84,7 @@ public class Figura {
             case 3:  //IZQUIERDA
                 this.i--;
                 break;
-            default:        
+            default:
                 break;
         }
     }
